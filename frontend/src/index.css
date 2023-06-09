@@ -1,0 +1,22 @@
+/* Navbar*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.card-image{
+  width: 500px;
+  height: 500px;
+}
+
+.login{
+  background-image: url(./assets/fondo2.avif);
+background-size: cover;
+  background-repeat: no-repeat;
+  width: 1860px;
+  height: 1000px;
+}
+
+.email{
+  color: white !important
+}
