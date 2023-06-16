@@ -1,4 +1,4 @@
-const pool = require("../config/conexion");
+const pool = require("../../config/conexion");
 const bcrypt = require("bcryptjs");
 
 const agregarUsuarioBD = async (name,email, password) => {
@@ -16,21 +16,30 @@ const agregarUsuarioBD = async (name,email, password) => {
 };
 
 const loginBD = async (email, password) => {
-  const consulta = "SELECT * FROM usuarios WHERE email = $1";
+  const consulta = `SELECT * FROM usuarios WHERE email = '${email}'`;
   const values = [email];
+  console.log(consulta)
   try {
-    const { rowCount, rows } = await pool.query(consulta, values);
+    const { rowCount, rows } = await pool.query(consulta);
+    console.log(rows);
+
     if (!rowCount) {
       return false;
     }
-    const passwordValido = bcrypt.compareSync(password, rows[0].password);
+    //TODO: corregir encriptacion de contraseñas
+    // const passwordValido = bcrypt.compareSync(password, rows[0].password);
+    const passwordValido = password == rows[0].password;
+    console.log(password);
+    console.log(rows[0].password)
+    console.log(passwordValido);
     if (passwordValido) {
       return true;
     } else {
       return false;
     }
   } catch (error) {
-    return false;
+    console.error(error);
+    return error;
   }
 };
 

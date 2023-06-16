@@ -17,4 +17,8 @@ const verificarToken = (req, res, next) => {
   next();
 };
 
-module.exports = { verificarToken };
+const generarToken = (user) =>{
+  return jwt.sign(user,api_secret);
+}
+
+module.exports = { verificarToken,generarToken };

@@ -1,13 +1,13 @@
 import React from 'react'
 import { useState, useContext } from "react";
-import Context from "../context";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import AuthContext from '../authContext';
 
 
 export default function login() {
 
-  const { setUsuario } = useContext(Context);
+  const { setUser,setAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [usuario, setUsuarioLocal] = useState({});
 
@@ -18,17 +18,24 @@ export default function login() {
   };
 
   const iniciarSesion = async () => {
+
     const urlServer = "http://localhost:3000";
-    const endpoint = "/login";
+    const endpoint = "/usuarios/login";
     const { email, password } = usuario;
     try {
       if (!email || !password) return alert("Email y password obligatorias");
-      const { data: token } = await axios.post(urlServer + endpoint, usuario);
-      
-      alert("Usuario identificado con éxito 😀");
-      localStorage.setItem("token", token);
-      setUsuario()
-      navigate("/perfil");
+      await axios.post(urlServer + endpoint, usuario).then(res=>{
+        if(res.status == 200){
+          setUser(res.data.user);
+          setAuthenticated(true);
+          localStorage.setItem('jwt',res.data.token);
+          navigate('/perfil')
+        }
+      });
+      // alert("Usuario identificado con éxito 😀");
+      // localStorage.setItem("token", token);
+      // setUsuario()
+      // navigate("/perfil");
     } catch ({ response: { data: message } }) {
       alert(message + " 🙁");
       console.log(message);
@@ -38,7 +45,6 @@ export default function login() {
 
 
   return (
-    <div className=' login'>
       <section > 
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -53,7 +59,7 @@ export default function login() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <div className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
                 Correo electronico
@@ -103,7 +109,7 @@ export default function login() {
                Iniciar Sesion
               </button>
             </div>
-          </form>
+          </div>
 
           <p className="mt-10 text-center text-sm text-gray-500">
             Not a member?{' '}
@@ -116,8 +122,11 @@ export default function login() {
       </section>
       
 
-    </div>
   )
 }
+
+
+
+  
 
 

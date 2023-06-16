@@ -1,8 +1,12 @@
-import React from 'react'
+
+import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import AuthContext from '../authContext'
+import ProfilePicture from './ui/ProfilePicture'
+import Button from './ui/Button'
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -17,12 +21,23 @@ function classNames(...classes) {
 }
 
 export default function navbar() {
+  const loginButton = () =>{
+    return (
+      <Button className='text-sm mr-2'>Iniciar Sesión</Button>
+
+    )
+  }
+  const registerButton = () =>{}
+  const logoutButton = () =>{}
+
+
+  const {user,setUser,authenticated,setAuthenticated} = useContext(AuthContext);
   return (
-    <div>
-      <Disclosure as="nav" className="bg-gray-800">
+      <div className='mb-16'>
+      <Disclosure as="nav" className="bg-slate-800 fixed top-0 z-50 w-full">
         {({ open }) => (
           <>
-            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 ">
               <div className="relative flex h-16 items-center justify-between">
                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                   {/* Mobile menu button*/}
@@ -37,51 +52,41 @@ export default function navbar() {
                 </div>
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="flex flex-shrink-0 items-center">
-                    <img
-                      className="block h-8 w-auto lg:hidden"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                      alt="Your Company"
-                    />
-                    <img
-                      className="hidden h-8 w-auto lg:block"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                      alt="Your Company"
-                    />
+                    <strong className="text-3xl lg:text-5xl font-extrabold text-white">P</strong>
+                    <span className="font-mono text-white mt-3">marketplace</span>
                   </div>
-                  <div className="hidden sm:ml-40 sm:block">
+                  <div className="hidden sm:ml-24 sm:flex items-center">
                     <div className="flex space-x-20">
-                      <NavLink to="/" class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
-                        INICIO
+                      <NavLink to="/" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
+                        Inicio
                       </NavLink>
-                      <NavLink to="/registrarse" class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
-                        REGISTRARSE
+                      <NavLink to="/marketplace" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
+                        Marketplace
                       </NavLink>
-                      <NavLink to="/productos" class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white">
-                        TIENDA
+                      <NavLink to="/marketplace" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
+                        Nosotros
                       </NavLink>
 
                     </div>
                   </div>
                 </div>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                  <button
+                  {/* <button
                     type="button"
                     className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                   >
                     <span className="sr-only">View notifications</span>
                     <BellIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
+                  </button> */}
 
                   {/* Profile dropdown */}
-                  <Menu as="div" className="relative ml-3">
+                  {
+                    authenticated && (
+<Menu as="div" className="relative ml-3">
                     <div>
                       <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                          alt=""
-                        />
+                        <ProfilePicture></ProfilePicture>
                       </Menu.Button>
                     </div>
                     <Transition
@@ -126,11 +131,29 @@ export default function navbar() {
                       </Menu.Items>
                     </Transition>
                   </Menu>
+                    )
+                  }
+                  {
+                    !authenticated && (
+                      <div className="hidden lg:flex ">
+                        <NavLink to='/login'>
+                        <Button className='text-sm mr-2'>Iniciar Sesión</Button>
+
+                        </NavLink>
+                        <NavLink to='/registrarse'>
+                      <Button className='text-sm' type='outline'>Registrarse</Button>
+
+                        </NavLink>
+                      </div>
+                      
+                    )
+                  }
+                  
                 </div>
               </div>
             </div>
 
-            <Disclosure.Panel className="sm:hidden">
+            <Disclosure.Panel className="lg:hidden">
               <div className="space-y-1 px-2 pb-3 pt-2">
                 {navigation.map((item) => (
                   <Disclosure.Button
@@ -147,6 +170,11 @@ export default function navbar() {
                   </Disclosure.Button>
                 ))}
               </div>
+              <div className="flex w-full items-center justify-center gap-4 pb-4">
+              <Button className='text-sm mr-2'>Iniciar Sesión</Button>
+<Button className='text-sm' type='outline'>Registrarse</Button>
+              </div>
+           
             </Disclosure.Panel>
           </>
         )}
